@@ -15,7 +15,8 @@ class Api::V1::BooksController < ApplicationController
   def destroy
     book = Book.find(params[:id])
     if book.destroy!
-      render json: {message: "Book successfully deleted"}, head: :no_content
+      head :no_content
+      
     else
       record_not_found(book)
     end
