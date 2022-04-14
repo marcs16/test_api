@@ -2,9 +2,11 @@ require 'rails_helper'
 
 RSpec.describe "Books", type: :request do
   describe "Books API" do
+    let(:author) { FactoryBot.create(:author) }
     describe "GET /api/v1/books" do
       it "Returns all books" do
-        FactoryBot.create_list(:book, 3)
+        
+        FactoryBot.create_list(:book, 3, author: author)
         get '/api/v1/books'
         expect(response).to have_http_status(:success)
         expect(JSON.parse(response.body)['message']).to eq('Books list')
@@ -15,12 +17,13 @@ RSpec.describe "Books", type: :request do
 
     describe "POST /api/v1/books" do
       it "Creates a new book" do
-        book_params = FactoryBot.attributes_for(:book)
+        book_params = FactoryBot.attributes_for(:book, author_id: author.id)
+        puts book_params
         expect {
         post '/api/v1/books', params: 
                               { book: { title: book_params[:title], 
-                                author: book_params[:author], 
-                                published_at: book_params[:published_at] } }
+                                published_at: book_params[:published_at],
+                                author_id: book_params[:author_id] } }
                                 .to_json, headers: { 'Content-Type' => 'application/json' } 
         }.to change(Book, :count).by(1)
         expect(response).to have_http_status(:created)
@@ -28,11 +31,11 @@ RSpec.describe "Books", type: :request do
       end
 
       it "Returns an error if the book is invalid" do
-        book_params = FactoryBot.attributes_for(:book)
+        book_params = FactoryBot.attributes_for(:book, author_id: author.id)
         expect {
         post '/api/v1/books', params: 
                               { book: { title: book_params[:title],
-                               author: book_params[:author]}}
+                                author_id: book_params[:author_id] } }
                                 .to_json, headers: { 'Content-Type' => 'application/json' }
         }.to change(Book, :count).by(0)
         expect(response).to have_http_status(:unprocessable_entity)
@@ -41,7 +44,7 @@ RSpec.describe "Books", type: :request do
     end
 
     describe "DELETE /api/v1/books/:id" do
-      let!(:book) {FactoryBot.create(:book)}
+      let!(:book) {FactoryBot.create(:book, author: author)}
       it "Deletes a book" do
         expect {
           delete "/api/v1/books/#{book.id}"
