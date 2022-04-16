@@ -9,8 +9,8 @@ RSpec.describe "Books", type: :request do
         FactoryBot.create_list(:book, 3, author: author)
         get '/api/v1/books'
         expect(response).to have_http_status(:success)
-        expect(JSON.parse(response.body)['message']).to eq('Books list')
-        expect(JSON.parse(response.body)['Books'].length).to eq(3)
+        expect(JSON.parse(response.body)['meta']['message']).to eq('Books list')
+        expect(JSON.parse(response.body)['data'].length).to eq(3)
       end
 
     end
@@ -18,7 +18,6 @@ RSpec.describe "Books", type: :request do
     describe "POST /api/v1/books" do
       it "Creates a new book" do
         book_params = FactoryBot.attributes_for(:book, author_id: author.id)
-        puts book_params
         expect {
         post '/api/v1/books', params: 
                               { book: { title: book_params[:title], 
