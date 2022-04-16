@@ -1,7 +1,7 @@
 class Api::V1::BooksController < ApplicationController
   def index
     books = Book.all
-    render json: books.only(:title, :published_at, :author_id),  meta:{message: "Books list"}, status: :ok
+    render json: books.only(:title, :published_at),  meta:{message: "Books list"}, status: :ok
   end
 
   def create
