@@ -24,6 +24,8 @@ gem 'bootsnap', '>= 1.4.4', require: false
 
 #project-specific gems
 gem 'active_model_serializers', '~> 0.10.13'
+#paging
+gem 'kaminari', '~> 1.2', '>= 1.2.2'
 
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible

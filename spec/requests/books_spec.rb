@@ -7,7 +7,7 @@ RSpec.describe "Books", type: :request do
       it "Returns all books" do
         
         FactoryBot.create_list(:book, 3, author: author)
-        get '/api/v1/books'
+        get '/api/v1/books' , params: {page: {number: 1, size: 3}}
         expect(response).to have_http_status(:success)
         expect(JSON.parse(response.body)['meta']['message']).to eq('Books list')
         expect(JSON.parse(response.body)['data'].length).to eq(3)
@@ -66,6 +66,15 @@ RSpec.describe "Books", type: :request do
       end
     end
 
+    describe "GET /api/v1/books/ with pagination" do
+      it "Returns all books with pagination" do
+        FactoryBot.create_list(:book, 3, author: author)
+        get '/api/v1/books', params: {page: {number: 1, size: 1}}
+        expect(response).to have_http_status(:success)
+        expect(JSON.parse(response.body)['meta']['message']).to eq('Books list')
+        expect(JSON.parse(response.body)['data'].length).to eq(1)
+      end
+    end
 
   end
 end
