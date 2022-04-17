@@ -1,7 +1,8 @@
 class Api::V1::BooksController < ApplicationController
   def index
-    books = Book.all
-    render json: books.only(:title, :published_at),  meta:{message: "Books list"}, status: :ok
+    
+    books = Book.page(page_format(params)).per(per_page_format(params))
+    render json: books,  meta:{message: "Books list"}, status: :ok
   end
 
   def create
@@ -35,4 +36,11 @@ class Api::V1::BooksController < ApplicationController
     params.require(:author).permit(:first_name, :last_name, :age)
   end
 
+  def page_format(params, default = 1)
+    params[:page].present? ? params[:page][:number].to_i : default
+  end
+
+  def per_page_format(params, default = Book.default_per_page)
+    params[:page].present? ? params[:page][:size].to_i : default
+  end
 end
