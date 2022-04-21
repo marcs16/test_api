@@ -8,6 +8,7 @@ class Api::V1::BooksController < ApplicationController
   def create
     author = Author.create!(author_params)
     book = Book.new(book_params.merge(author_id: author.id))
+    CreatePostApiJob.perform_later
     if book.save
       render json: {message: "Book successfully created", Book: book}, status: :created
     else
