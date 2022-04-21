@@ -18,6 +18,7 @@ RSpec.describe "Books", type: :request do
     describe "POST /api/v1/books" do
       it "Creates a new book" do
         book_params = FactoryBot.attributes_for(:book, author_id: author.id)
+        expect(CreatePostApiJob).to receive(:perform_later)
         expect {
         post '/api/v1/books', params: 
                               { book: { title: book_params[:title], 
